@@ -19,6 +19,7 @@
 import unittest
 
 import qvarn
+from qvarn._compat import unicode
 
 
 class SchemaFromPrototypeTests(unittest.TestCase):

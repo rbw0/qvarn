@@ -18,17 +18,32 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import ast
 from distutils.core import setup
 
-import qvarn
+
+for line in open('qvarn/version.py'):
+    if line.startswith('__version__'):
+        __version__ = ast.literal_eval(line.split('=')[1].strip())
 
 
 setup(
     name='qvarn',
-    version=qvarn.__version__,
+    version=__version__,
     description='backend service for JSON and binary data storage',
     author='Suomen Tilaajavastuu Oy',
     author_email='tilaajavastuu.hifi@tilaajavastuu.fi',
     packages=['qvarn'],
     scripts=['slog-pretty', 'slog-errors', 'qvarn-backend'],
+    install_requires=[
+        'bottle',
+        'psycopg2',
+        'PyJWT',
+        'uwsgidecorators',
+    ],
+    classifiers=[
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+    ],
 )

@@ -21,6 +21,7 @@ import uuid
 import collections
 
 import qvarn
+from qvarn._compat import unicode
 
 
 class ReadOnlyStorage(object):

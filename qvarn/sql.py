@@ -26,6 +26,7 @@ Qvarn are supported.
 '''
 
 
+import codecs
 import sqlite3
 import string
 
@@ -33,6 +34,9 @@ import psycopg2
 import psycopg2.pool
 import psycopg2.extras
 import psycopg2.extensions
+
+
+from qvarn._compat import unicode, buffer
 
 
 column_types = (unicode, int, bool, buffer)
@@ -307,7 +311,7 @@ class SqliteAdapter(SqlAdapter):
 
     def format_qualified_placeholder_name(self, table_name, column_name):
         q = self.qualified_column(table_name, column_name)
-        return q.encode('hex')
+        return codecs.encode(q.encode('UTF-8'), 'hex').decode('ASCII')
 
     def get_conn(self):
         return self._conn

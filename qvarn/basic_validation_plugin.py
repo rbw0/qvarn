@@ -22,8 +22,6 @@
 # pylint: disable=unsubscriptable-object
 # pylint: disable=unsupported-membership-test
 
-import json
-
 import bottle
 
 import qvarn
@@ -60,7 +58,7 @@ class BasicValidationPlugin(object):
         if bottle.request.content_type != 'application/json':
             raise ContentIsNotJSON()
         try:
-            obj = json.load(bottle.request.body)
+            obj = bottle.request.json
         except ValueError:
             raise ContentIsNotJSON()
 

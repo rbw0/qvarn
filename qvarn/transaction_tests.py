@@ -82,7 +82,7 @@ class TransactionTests(unittest.TestCase):
         with self.trans:
             self.trans.create_table(u'foo', {u'bar': int})
             self.trans.insert(u'foo', {u'bar': 42})
-            self.trans.update(u'foo', None, {u'bar': 007})
+            self.trans.update(u'foo', None, {u'bar': 7})
             rows = self.trans.select(u'foo', [u'bar'], None)
         self.assertEqual(self.sql.updated_tables, [u'foo'])
         self.assertEqual(rows, [{u'bar': 7}])

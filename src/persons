@@ -1,0 +1,241 @@
+#!/usr/bin/env python2
+#
+# src/persons - implement the /persons resource
+#
+# Copyright 2015, 2016 Suomen Tilaajavastuu Oy
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+import qvarn
+from qvarn._compat import buffer
+
+
+person_prototype_v0 = {
+    u'type': u'',
+    u'id': u'',
+    u'revision': u'',
+}
+
+
+person_prototype_v1 = {
+    u'type': u'',
+    u'id': u'',
+    u'revision': u'',
+    u'names': [
+        {
+            u'full_name': u'',
+            u'sort_key': u'',
+            u'titles': [u''],
+            u'given_names': [u''],
+            u'surnames': [u''],
+        },
+    ],
+}
+
+
+person_prototype_current = person_prototype_v2 = {
+    u'type': u'',
+    u'id': u'',
+    u'revision': u'',
+    u'names': [
+        {
+            u'full_name': u'',
+            u'sort_key': u'',
+            u'titles': [u''],
+            u'given_names': [u''],
+            u'surnames': [u''],
+        },
+    ],
+    u'gluu_user_id': u'',
+}
+
+
+person_photo_prototype = {
+    u'body': buffer(b''),
+    u'content_type': u'',
+}
+
+
+person_private_prototype = {
+    u'date_of_birth': u'',
+    u'gov_ids': [
+        {
+            u'country': u'',
+            u'id_type': u'',
+            u'gov_id': u'',
+        },
+    ],
+    u'contacts': [
+        {
+            u'contact_type': u'',
+            u'contact_source': u'',
+            u'contact_timestamp': u'',
+            u'phone_number': u'',
+            u'email_address': u'',
+            u'full_address': u'',
+            u'country': u'',
+            u'address_lines': [u''],
+            u'post_code': u'',
+            u'post_area': u'',
+            u'verification_code': u'',
+            u'verification_code_expiration_date': u'',
+            u'email_verification_timestamp': u'',
+        },
+    ],
+    u'nationalities': [u''],
+    u'residences': [
+        {
+            u'country': u'',
+            u'location': u'',
+        },
+    ],
+}
+
+
+person_private_prototype_current = person_private_prototype_v2 = {
+    u'date_of_birth': u'',
+    u'gov_ids': [
+        {
+            u'country': u'',
+            u'id_type': u'',
+            u'gov_id': u'',
+        },
+    ],
+    u'contacts': [
+        {
+            u'contact_type': u'',
+            u'contact_roles': [u''],
+            u'contact_source': u'',
+            u'contact_timestamp': u'',
+            u'phone_number': u'',
+            u'email_address': u'',
+            u'full_address': u'',
+            u'country': u'',
+            u'address_lines': [u''],
+            u'post_code': u'',
+            u'post_area': u'',
+            u'verification_code': u'',
+            u'verification_code_expiration_date': u'',
+            u'email_verification_timestamp': u'',
+        },
+    ],
+    u'nationalities': [u''],
+    u'residences': [
+        {
+            u'country': u'',
+            u'location': u'',
+        },
+    ],
+}
+
+
+person_sync_prototype = {
+    u'sync_sources': [
+        {
+            u'sync_source': u'',
+            u'sync_id': u'',
+        },
+    ],
+    u'sync_revision': u'',
+}
+
+
+class NamelessPerson(qvarn.ValidationError):
+
+    msg = u'Person {id} does not have any names'
+
+
+class PersonWithoutFullName(qvarn.ValidationError):
+
+    msg = u'Person {id} does not have a full name'
+
+
+def validate_person(obj):
+    if not obj[u'names']:
+        raise NamelessPerson(id=obj.get(u'id', u'(no id provided)'))
+    for name_dict in obj[u'names']:
+        if not name_dict[u'full_name']:
+            raise PersonWithoutFullName(id=obj.get(u'id', u'(no id provided)'))
+
+
+resource_type_spec = {
+    u'path': u'/persons',
+    u'type': u'person',
+    u'versions': [
+        {
+            u'version': 'v0',
+            u'prototype': person_prototype_v0,
+        },
+        {
+            u'version': 'v1',
+            u'prototype': person_prototype_v1,
+            u'subpaths': {
+                u'photo': {
+                    u'prototype': person_photo_prototype,
+                },
+                u'private': {
+                    u'prototype': person_private_prototype,
+                },
+                u'sync': {
+                    u'prototype': person_sync_prototype,
+                },
+            },
+            u'files': [
+                u'photo',
+            ],
+        },
+        {
+            u'version': 'v2',
+            u'prototype': person_prototype_v1,
+            u'subpaths': {
+                u'photo': {
+                    u'prototype': person_photo_prototype,
+                },
+                u'private': {
+                    u'prototype': person_private_prototype_v2,
+                },
+                u'sync': {
+                    u'prototype': person_sync_prototype,
+                },
+            },
+            u'files': [
+                u'photo',
+            ],
+            u'validator': validate_person,
+        },
+        {
+            u'version': 'v3',
+            u'prototype': person_prototype_v2,
+            u'subpaths': {
+                u'photo': {
+                    u'prototype': person_photo_prototype,
+                },
+                u'private': {
+                    u'prototype': person_private_prototype_v2,
+                },
+                u'sync': {
+                    u'prototype': person_sync_prototype,
+                },
+            },
+            u'files': [
+                u'photo',
+            ],
+            u'validator': validate_person,
+        },
+    ],
+}
+
+
+application = qvarn.create_resource_server(resource_type_spec)

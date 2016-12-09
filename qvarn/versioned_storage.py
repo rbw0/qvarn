@@ -19,6 +19,7 @@
 import random
 
 import qvarn
+from qvarn._compat import unicode
 
 
 class VersionedStorage(object):

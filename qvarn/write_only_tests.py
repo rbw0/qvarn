@@ -19,6 +19,7 @@
 import unittest
 
 import qvarn
+from qvarn._compat import unicode
 
 
 class WriteOnlyStorageTests(unittest.TestCase):
@@ -109,7 +110,7 @@ class WriteOnlyStorageTests(unittest.TestCase):
             self.assertEqual(type(added[u'revision']), unicode)
 
             self.assertEqual(
-                sorted(self.person.keys() + [u'id', u'revision']),
+                sorted(list(self.person) + [u'id', u'revision']),
                 sorted(added.keys()))
 
             self.assertEqual(

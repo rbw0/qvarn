@@ -17,11 +17,16 @@
 
 
 import argparse
-import ConfigParser
 import os
 import sys
-import yaml
 
+try:
+    # Python 2
+    from ConfigParser import RawConfigParser
+except ImportError:  # pragma: no cover
+    from configparser import RawConfigParser
+
+import yaml
 import bottle
 
 import qvarn
@@ -211,7 +216,7 @@ class BackendApplication(object):
             help='use FILE as configuration file')
         args = parser.parse_args()
 
-        config = ConfigParser.RawConfigParser()
+        config = RawConfigParser()
         files_read = config.read(args.config)
         if files_read != [args.config]:
             raise MissingConfigFileError(filename=args.config)

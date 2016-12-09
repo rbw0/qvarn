@@ -31,6 +31,7 @@
 import bottle
 
 import qvarn
+from qvarn._compat import unicode, buffer
 
 
 class FileResource(object):

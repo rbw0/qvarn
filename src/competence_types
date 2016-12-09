@@ -1,0 +1,284 @@
+#!/usr/bin/env python2
+#
+# src/competence_types - implement the /competence_types resource
+#
+# Copyright 2015, 2016 Suomen Tilaajavastuu Oy
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+import qvarn
+from qvarn._compat import buffer
+
+
+resource_type = u'competence_type'
+
+
+competence_type_prototype_v0 = {
+    u'type': u'',
+    u'id': u'',
+    u'revision': u'',
+}
+
+
+competence_type_prototype_v1 = {
+    u'type': u'',
+    u'id': u'',
+    u'revision': u'',
+    u'competence_type_id': u'',
+    u'names': [
+        {
+            u'locale': u'',
+            u'name': u''
+        }
+    ],
+    u'descriptions': [
+        {
+            u'locale': u'',
+            u'description': u''
+        }
+    ]
+}
+
+
+competence_type_prototype_v2 = {
+    u'type': u'',
+    u'id': u'',
+    u'revision': u'',
+    u'competence_type_id': u'',
+    u'names': [
+        {
+            u'locale': u'',
+            u'name': u''
+        }
+    ],
+    u'customer_org_ids': [u''],
+    u'descriptions': [
+        {
+            u'locale': u'',
+            u'description': u''
+        }
+    ]
+}
+
+
+competence_type_prototype_v3 = {
+    u'type': u'',
+    u'id': u'',
+    u'revision': u'',
+    u'competence_type_id': u'',
+    u'names': [
+        {
+            u'locale': u'',
+            u'name': u''
+        }
+    ],
+    u'customer_org_ids': [u''],
+    u'master_register_name': u'',
+    u'master_register_org_id': u'',
+    u'descriptions': [
+        {
+            u'locale': u'',
+            u'description': u''
+        }
+    ]
+}
+
+
+competence_type_prototype_v4 = {
+    u'type': u'',
+    u'id': u'',
+    u'revision': u'',
+    u'competence_type_id': u'',
+    u'names': [
+        {
+            u'locale': u'',
+            u'name': u''
+        }
+    ],
+    u'customer_org_ids': [u''],
+    u'is_verified': False,
+    u'descriptions': [
+        {
+            u'locale': u'',
+            u'description': u''
+        }
+    ]
+}
+
+
+competence_type_prototype_current = competence_type_prototype_v5 = {
+    u'type': u'',
+    u'id': u'',
+    u'revision': u'',
+    u'competence_type_id': u'',
+    u'names': [
+        {
+            u'locale': u'',
+            u'name': u''
+        }
+    ],
+    u'customer_org_ids': [u''],
+    u'is_verified': False,
+    u'attribute_validation': [
+        {
+            u'attribute': u'',
+            u'required': False,
+            u'regex': u''
+        }
+    ],
+    u'descriptions': [
+        {
+            u'locale': u'',
+            u'description': u''
+        }
+    ]
+}
+
+
+card_front_prototype = {
+    u'body': buffer(b''),
+    u'content_type': u'',
+}
+
+
+card_back_prototype = {
+    u'body': buffer(b''),
+    u'content_type': u'',
+}
+
+
+registry_logo_prototype = {
+    u'body': buffer(b''),
+    u'content_type': u'',
+}
+
+
+resource_type_spec = {
+    u'path': u'/competence_types',
+    u'type': u'competence_type',
+    u'versions': [
+        {
+            u'version': u'v0',
+            u'prototype': competence_type_prototype_v0,
+        },
+        {
+            u'version': u'v1',
+            u'prototype': competence_type_prototype_v1,
+        },
+        {
+            u'version': u'v2',
+            u'prototype': competence_type_prototype_v1,
+            u'subpaths': {
+                u'card_front': {
+                    u'prototype': card_front_prototype,
+                },
+                u'card_back': {
+                    u'prototype': card_back_prototype,
+                },
+                u'registry_logo': {
+                    u'prototype': registry_logo_prototype,
+                },
+            },
+            u'files': [
+                u'card_front',
+                u'card_back',
+                u'registry_logo',
+            ],
+        },
+        {
+            u'version': u'v3',
+            u'prototype': competence_type_prototype_v2,
+            u'subpaths': {
+                u'card_front': {
+                    u'prototype': card_front_prototype,
+                },
+                u'card_back': {
+                    u'prototype': card_back_prototype,
+                },
+                u'registry_logo': {
+                    u'prototype': registry_logo_prototype,
+                },
+            },
+            u'files': [
+                u'card_front',
+                u'card_back',
+                u'registry_logo',
+            ],
+        },
+        {
+            u'version': u'v4',
+            u'prototype': competence_type_prototype_v3,
+            u'subpaths': {
+                u'card_front': {
+                    u'prototype': card_front_prototype,
+                },
+                u'card_back': {
+                    u'prototype': card_back_prototype,
+                },
+                u'registry_logo': {
+                    u'prototype': registry_logo_prototype,
+                },
+            },
+            u'files': [
+                u'card_front',
+                u'card_back',
+                u'registry_logo',
+            ],
+        },
+        {
+            u'version': u'v5',
+            u'prototype': competence_type_prototype_v4,
+            u'subpaths': {
+                u'card_front': {
+                    u'prototype': card_front_prototype,
+                },
+                u'card_back': {
+                    u'prototype': card_back_prototype,
+                },
+                u'registry_logo': {
+                    u'prototype': registry_logo_prototype,
+                },
+            },
+            u'files': [
+                u'card_front',
+                u'card_back',
+                u'registry_logo',
+            ],
+        },
+        {
+            u'version': u'v6',
+            u'prototype': competence_type_prototype_v5,
+            u'subpaths': {
+                u'card_front': {
+                    u'prototype': card_front_prototype,
+                },
+                u'card_back': {
+                    u'prototype': card_back_prototype,
+                },
+                u'registry_logo': {
+                    u'prototype': registry_logo_prototype,
+                },
+            },
+            u'files': [
+                u'card_front',
+                u'card_back',
+                u'registry_logo',
+            ],
+        },
+    ],
+}
+
+
+application = qvarn.create_resource_server(resource_type_spec)

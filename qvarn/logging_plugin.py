@@ -82,7 +82,7 @@ class LoggingPlugin(object):
         qvarn.log.log(
             'http-request',
             method=r.method,
-            path=r.path.decode('utf-8'),
+            path=r.path,
             url_args=r.url_args,
             headers={
                 key: (

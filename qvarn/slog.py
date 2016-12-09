@@ -20,12 +20,19 @@ import datetime
 import json
 import logging
 import os
-import thread
+import syslog
 import time
 import traceback
-import syslog
+
+try:  # pragma: no cover
+    # Python 2
+    from thread import get_ident as _get_thread_id
+except ImportError:  # pragma: no cover
+    # Python 3.3+
+    from threading import get_ident as _get_thread_id
 
 import qvarn
+from qvarn._compat import unicode, buffer
 
 
 class StructuredLog(object):
@@ -102,7 +109,7 @@ class StructuredLog(object):
             unicode: self._nop_conversion,
             type(None): self._nop_conversion,
 
-            str: self._convert_str_value,
+            bytes: self._convert_str_value,
             buffer: self._convert_buffer_value,
             list: self._convert_list_value,
             dict: self._convert_dict_value,
@@ -122,12 +129,12 @@ class StructuredLog(object):
     def _convert_str_value(self, value):
         # Convert to UTF8, if that works. Otherwise, repr(value).
         try:
-            return value.encode('utf8')
+            return value.decode('utf8')
         except UnicodeDecodeError:
             return repr(value)
 
     def _convert_buffer_value(self, value):
-        return repr(str(value))
+        return repr(bytes(value))
 
     def _convert_list_value(self, value):
         return [self._convert_value(item) for item in value]
@@ -160,7 +167,7 @@ class StructuredLog(object):
         return os.getpid()
 
     def _get_thread_id(self):
-        return thread.get_ident()
+        return _get_thread_id()
 
     def _get_traceback(self):
         return traceback.format_exc()
@@ -212,7 +219,7 @@ class FileSlogWriter(SlogWriter):
         if now is None:  # pragma: no cover
             now = time.localtime()
         else:
-            now = (list(now) + [0]*9)[:9]
+            now = (now + (0,) * 9)[:9]
         timestamp = time.strftime('%Y%m%dT%H%M%S', now)
         return '{}-{}-{}{}'.format(prefix, timestamp, pid, suffix)
 

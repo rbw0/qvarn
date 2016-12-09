@@ -17,6 +17,7 @@
 
 
 import qvarn
+from qvarn._compat import unicode
 
 
 def schema_from_prototype(prototype, resource_type=None, **kwargs):

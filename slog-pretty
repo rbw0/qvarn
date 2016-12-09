@@ -5,6 +5,8 @@ import sys
 
 import yaml
 
+from qvarn._compat import unicode
+
 
 def text_representer(dumper, data):
     if '\n' in data:

@@ -1,0 +1,167 @@
+#!/usr/bin/env python2
+#
+# src/cards - implement the /cards resource
+#
+# Copyright 2015, 2016 Suomen Tilaajavastuu Oy
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+import qvarn
+from qvarn._compat import buffer
+
+
+card_prototype_v0 = {
+    u'type': u'',
+    u'id': u'',
+    u'revision': u'',
+}
+
+
+card_prototype_current = card_prototype_v1 = {
+    u'type': u'',
+    u'id': u'',
+    u'revision': u'',
+    u'card_type': u'',
+    u'card_ids': [
+        {
+            u'card_id_type': u'',
+            u'card_id': u'',
+        },
+    ],
+    u'issued_date': u'',
+    u'created_date': u'',
+    u'valid_from_date': u'',
+    u'valid_until_date': u'',
+    u'expiration_date': u'',
+    u'card_status_history': [
+        {
+            u'card_status': u'',
+            u'modified_by': u'',
+            u'modified_timestamp': u'',
+            u'modification_reason': u'',
+            u'modification_description': u'',
+        },
+    ],
+    u'current_status': u'',
+    u'org': u'',
+    u'issuer_name': u'',
+    u'issuer_gov_org_ids': [
+        {
+            u'country': u'',
+            u'org_id_type': u'',
+            u'gov_org_id': u'',
+        },
+    ],
+    u'person': u'',
+    u'holder_gov_ids': [
+        {
+            u'country': u'',
+            u'id_type': u'',
+            u'gov_id': u'',
+        },
+    ],
+    u'holder_nationalities': [u''],
+    u'holder_names': [
+        {
+            u'full_name': u'',
+            u'sort_key': u'',
+            u'titles': [u''],
+            u'given_names': [u''],
+            u'surnames': [u''],
+        },
+    ],
+    u'id06_taxation_country': u'',
+    u'id06_virtual_devices': [u''],
+    u'id06_virtual_enabled': False,
+    u'id06_virtual_bankid_required': False,
+    u'id06_virtual_valid_from': u'',
+    u'id06_virtual_valid_until': u'',
+    u'id06_virtual_history': [
+        {
+            u'full_name': u'',
+            u'date': u'',
+            u'enabled': False,
+        },
+    ],
+    u'id06_supplier_full_name': u'',
+}
+
+
+card_holder_photo_prototype = {
+    u'body': buffer(b''),
+    u'content_type': u'',
+}
+
+
+card_issuer_logo_prototype = {
+    u'body': buffer(b''),
+    u'content_type': u'',
+}
+
+
+card_sync_prototype = {
+    u'sync_sources': [
+        {
+            u'sync_source': u'',
+            u'sync_id': u'',
+        },
+    ],
+    u'sync_revision': u'',
+}
+
+
+class TypelessCard(qvarn.ValidationError):
+
+    msg = u'Card {id} does not have a type'
+
+
+def validate_card(obj):
+    if not obj[u'card_type']:
+        raise TypelessCard(id=obj.get(u'id', u'(no id provided)'))
+
+
+resource_type_spec = {
+    u'path': u'/cards',
+    u'type': u'card',
+    u'versions': [
+        {
+            u'version': u'v0',
+            u'prototype': card_prototype_v0,
+        },
+        {
+            u'version': u'v1',
+            u'prototype': card_prototype_v1,
+            u'subpaths': {
+                u'holder_photo': {
+                    u'prototype': card_holder_photo_prototype,
+                },
+                u'issuer_logo': {
+                    u'prototype': card_issuer_logo_prototype,
+                },
+                u'sync': {
+                    u'prototype': card_sync_prototype,
+                },
+            },
+            u'files': [
+                u'holder_photo',
+                u'issuer_logo',
+            ],
+            u'validator': validate_card,
+        },
+    ],
+}
+
+
+application = qvarn.create_resource_server(resource_type_spec)

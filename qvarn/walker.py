@@ -17,6 +17,7 @@
 
 
 import qvarn
+from qvarn._compat import unicode
 
 
 class ItemWalker(object):

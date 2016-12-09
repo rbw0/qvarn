@@ -70,3 +70,6 @@ qvarn/http_statuses.py
 
 # Contains version number.
 qvarn/version.py
+
+# Python 3 compatibility shim
+qvarn/_compat.py

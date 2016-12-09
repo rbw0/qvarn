@@ -23,6 +23,7 @@ import jwt
 import bottle
 
 import qvarn
+from qvarn._compat import unicode
 
 
 class AuthorizationValidator(object):
@@ -89,7 +90,7 @@ class AuthorizationValidator(object):
                 # Leeway for time checks (issued at, expiration)
                 leeway=datetime.timedelta(seconds=60),
             )
-        except jwt.InvalidTokenError, e:
+        except jwt.InvalidTokenError as e:
             qvarn.log.log(
                 'error',
                 msg_text='Access token is invalid: jwt.decode')

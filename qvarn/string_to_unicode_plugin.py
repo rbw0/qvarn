@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from qvarn._compat import unicode
+
 
 class StringToUnicodePlugin(object):
 
@@ -30,12 +32,12 @@ class StringToUnicodePlugin(object):
 
     def _format_args(self, args):
         return (
-            unicode(arg, 'utf-8') if isinstance(arg, str) else arg
+            unicode(arg, 'utf-8') if isinstance(arg, bytes) else arg
             for arg in args
         )
 
     def _format_kwargs(self, kwargs):
         return {
-            key: unicode(arg, 'utf-8') if isinstance(arg, str) else arg
-            for key, arg in kwargs.iteritems()
+            key: unicode(arg, 'utf-8') if isinstance(arg, bytes) else arg
+            for key, arg in kwargs.items()
         }

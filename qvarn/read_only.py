@@ -21,6 +21,7 @@ import uuid
 import collections
 
 import qvarn
+from qvarn._compat import unicode
 
 
 SortParam = collections.namedtuple('SortParam', ('key', 'ascending'))

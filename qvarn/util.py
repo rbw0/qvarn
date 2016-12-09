@@ -25,6 +25,8 @@ import yaml
 
 import qvarn
 
+from qvarn._compat import buffer
+
 
 # Matches <xx> but not <xx>xx<xx>.
 route_to_scope_re = re.compile(r'<[^>]*>')
@@ -242,7 +244,7 @@ def set_up_yaml_loader_constructors():  # pragma: no cover
         # resource type field is the string "blob" in which
         # case we use a buffer().
         if node.value == 'blob':
-            return buffer('')
+            return buffer(b'')
         return self.construct_scalar(node)
 
     yaml.SafeLoader.add_constructor(

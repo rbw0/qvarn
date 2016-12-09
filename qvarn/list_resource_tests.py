@@ -18,7 +18,13 @@
 
 import json
 import unittest
-import urllib
+
+try:  # pragma: no cover
+    # Python 2
+    from urllib import quote
+except ImportError:  # pragma: no cover
+    # Python 3
+    from urllib.parse import quote
 
 import bottle
 
@@ -183,7 +189,7 @@ class SearchAnyTests(ListResourceBase):
         self._add_item(foo=u'b')
         self._add_item(foo=u'c')
 
-        value = urllib.quote(json.dumps([u'a', u'b']), safe='')
+        value = quote(json.dumps([u'a', u'b']), safe='')
         result = self._search(u'/search/any/exact/foo/%s/show_all' % value,
                               show=u'foo')
         self.assertEqual(result, [u'a', u'b'])
@@ -194,7 +200,7 @@ class SearchAnyTests(ListResourceBase):
         self._add_item(foo=u'baz')
         self._add_item(foo=u'xyz')
 
-        value = urllib.quote(json.dumps([u'o', u'a']), safe='')
+        value = quote(json.dumps([u'o', u'a']), safe='')
         result = self._search(u'/search/any/contains/foo/%s/show_all' % value,
                               show=u'foo')
         self.assertEqual(result, [u'foo', u'bar', u'baz'])
@@ -205,7 +211,7 @@ class SearchAnyTests(ListResourceBase):
         self._add_item(foo=u'baz')
         self._add_item(foo=u'xyz')
 
-        value = urllib.quote(json.dumps([u'fo', u'ba']), safe='')
+        value = quote(json.dumps([u'fo', u'ba']), safe='')
         result = self._search(
             u'/search/any/startswith/foo/%s/show_all' % value, show=u'foo')
         self.assertEqual(result, [u'foo', u'bar', u'baz'])
@@ -215,7 +221,7 @@ class SearchAnyTests(ListResourceBase):
         self._add_item(lst=list(u'def'))
         self._add_item(lst=list(u'ghj'))
 
-        value = urllib.quote(json.dumps([u'b', u'd']), safe='')
+        value = quote(json.dumps([u'b', u'd']), safe='')
         result = self._search(u'/search/any/exact/lst/%s/show_all' % value,
                               show=u'lst')
         self.assertEqual(result, [
@@ -228,7 +234,7 @@ class SearchAnyTests(ListResourceBase):
         self._add_item(lst=list(u'def'))
         self._add_item(lst=list(u'ghj'))
 
-        value = urllib.quote(json.dumps([u'g', u'j']), safe='')
+        value = quote(json.dumps([u'g', u'j']), safe='')
         result = self._search(u'/search/any/exact/lst/%s/show_all' % value,
                               show=u'lst')
         self.assertEqual(result, [
@@ -239,7 +245,8 @@ class SearchAnyTests(ListResourceBase):
         with self.assertRaises(BadAnySearchValue) as e:
             self._search(u'/search/any/exact/foo/bar/show_all')
         self.assertEqual(str(e.exception), (
-            u"Can't parse ANY search value: No JSON object could be decoded."
+            u"Can't parse ANY search value: "
+            u"Expecting value: line 1 column 1 (char 0)."
         ))
 
     def test_non_list_value(self):

@@ -9,4 +9,7 @@ debian/*.substvars
 debian/*/
 *.log
 *.egg-info/
+.tox/
 tags
+MANIFEST
+dist/

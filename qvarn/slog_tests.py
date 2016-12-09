@@ -24,6 +24,7 @@ import tempfile
 import unittest
 
 import qvarn
+from qvarn._compat import buffer
 
 
 class StructuredLogTests(unittest.TestCase):
@@ -127,7 +128,10 @@ class StructuredLogTests(unittest.TestCase):
 
     def test_logs_traceback(self):
         slog, writer, _ = self.create_structured_log()
-        slog.log('testmsg', exc_info=True)
+        try:
+            raise Exception('ignore me')
+        except Exception:
+            slog.log('testmsg', exc_info=True)
         slog.close()
 
         objs = self.read_log_entries(writer)
@@ -146,6 +150,9 @@ class StructuredLogTests(unittest.TestCase):
     def test_logs_buffer(self):
         slog, writer, _ = self.create_structured_log()
         binary = ''.join(chr(x) for x in range(256))
+        if not isinstance(binary, bytes):
+            # Python 3
+            binary = binary.encode('latin-1')
         slog.log('testmsg', text=buffer(binary))
         slog.close()
 
@@ -155,7 +162,7 @@ class StructuredLogTests(unittest.TestCase):
 
     def test_logs_nonutf8(self):
         slog, writer, _ = self.create_structured_log()
-        notutf8 = '\x86'
+        notutf8 = b'\x86'
         slog.log('blobmsg', notutf8=notutf8)
         slog.close()
 

@@ -26,7 +26,14 @@
 
 
 import time
-import urlparse
+
+try:
+    # Python 2
+    from urlparse import urljoin, urlparse, urlunparse
+except ImportError:  # pragma: no cover
+    # Python 3
+    from urllib.parse import urljoin, urlparse, urlunparse
+
 import bottle
 
 import qvarn
@@ -227,11 +234,11 @@ class ListenerResource(object):
             added = wo.add_item(t, listener)
 
         resource_path = u'%s/listeners/%s' % (self._path, added[u'id'])
-        resource_url = urlparse.urljoin(
+        resource_url = urljoin(
             bottle.request.url, resource_path)
         # FIXME: Force https scheme, until haproxy access us via https.
-        resource_url = urlparse.urlunparse(
-            ('https',) + urlparse.urlparse(resource_url)[1:])
+        resource_url = urlunparse(
+            ('https',) + urlparse(resource_url)[1:])
         bottle.response.headers['Location'] = resource_url
         bottle.response.status = 201
         return added

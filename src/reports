@@ -1,0 +1,90 @@
+#!/usr/bin/env python2
+#
+# src/reports.py - implement the /reports resource
+#
+# Copyright 2015, 2016 Suomen Tilaajavastuu Oy
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+import qvarn
+from qvarn._compat import buffer
+
+
+resource_type = u'report'
+
+
+report_prototype_v0 = {
+    u'type': u'',
+    u'id': u'',
+    u'revision': u'',
+}
+
+
+report_prototype_current = report_prototype_v1 = {
+    u'type': u'',
+    u'id': u'',
+    u'revision': u'',
+    u'org': u'',
+    u'report_type': u'',
+    u'generated_timestamp': u'',
+    u'tilaajavastuu_status': u'',
+}
+
+
+report_pdf_prototype = {
+    u'body': buffer(b''),
+    u'content_type': u'',
+}
+
+
+report_sync_prototype = {
+    u'sync_sources': [
+        {
+            u'sync_source': u'',
+            u'sync_id': u'',
+        },
+    ],
+    u'sync_revision': u'',
+}
+
+
+resource_type_spec = {
+    u'path': u'/reports',
+    u'type': u'report',
+    u'versions': [
+        {
+            u'version': u'v0',
+            u'prototype': report_prototype_v0,
+        },
+        {
+            u'version': u'v1',
+            u'prototype': report_prototype_v1,
+            u'subpaths': {
+                u'pdf': {
+                    u'prototype': report_pdf_prototype,
+                },
+                u'sync': {
+                    u'prototype': report_sync_prototype,
+                },
+            },
+            u'files': [
+                u'pdf',
+            ],
+        },
+    ],
+}
+
+
+application = qvarn.create_resource_server(resource_type_spec)

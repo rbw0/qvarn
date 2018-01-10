@@ -37,7 +37,7 @@ rm -f .coverage
 # PEP8 specification. See https://www.python.org/dev/peps/pep-0008/ for
 # details.
 
-pycodestyle qvarn/*.py
+pep8 qvarn/*.py
 
 
 # Use pylint to find errors and more style issues. Note that pylint

@@ -151,8 +151,8 @@ class ReadOnlyStorage(object):
             join_conditions = {}
             sort_params = sort_params or []
             order_by_fields = [
-                self._kludge_order_by_fields(
-                    sql, schema, param, main_table, tables_used, join_conditions)
+                self._kludge_order_by_fields(sql, schema, param, main_table,
+                                             tables_used, join_conditions)
                 for param in sort_params]
 
         with self._m.new('build full sql query'):

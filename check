@@ -37,7 +37,7 @@ rm -f .coverage
 # PEP8 specification. See https://www.python.org/dev/peps/pep-0008/ for
 # details.
 
-pep8 qvarn/*.py
+pycodestyle qvarn/*.py
 
 
 # Use pylint to find errors and more style issues. Note that pylint
@@ -118,5 +118,6 @@ pylint --rcfile /dev/null \
        --disable too-many-statements \
        --disable arguments-differ \
        --disable no-else-return \
+       --disable inconsistent-return-statements \
        \
        qvarn

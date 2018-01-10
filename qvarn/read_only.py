@@ -22,6 +22,9 @@ import collections
 
 import qvarn
 
+
+SortParam = collections.namedtuple('SortParam', ('key', 'ascending'))
+
 SearchParam = collections.namedtuple('SearchParam', (
     'rule',
     'key',
@@ -149,14 +152,17 @@ class ReadOnlyStorage(object):
             sort_params = sort_params or []
             order_by_fields = [
                 self._kludge_order_by_fields(
-                    sql, schema, key, main_table, tables_used, join_conditions)
-                for key in sort_params]
+                    sql, schema, param, main_table, tables_used, join_conditions)
+                for param in sort_params]
 
         with self._m.new('build full sql query'):
             main_table_alias = u't0'
             # With `SELECT DISTINCT` PostgreSQL requires all ORDER BY fields to
             # be included in select list too.
-            select_list = [main_table_alias + u'.id'] + order_by_fields
+            select_list = (
+                [main_table_alias + u'.id'] +
+                [f.key for f in order_by_fields]
+            )
             query = (
                 u'SELECT DISTINCT {select_list} '
                 u'FROM {main_table} AS {main_table_alias}'
@@ -177,7 +183,10 @@ class ReadOnlyStorage(object):
                 query += u' WHERE ' + u' AND '.join(
                     u'({})'.format(c) for c in conds)
             if order_by_fields:
-                query += u' ORDER BY ' + u', '.join(order_by_fields)
+                query += u' ORDER BY ' + u', '.join([
+                    sort.key + (u'' if sort.ascending else u' DESC')
+                    for sort in order_by_fields
+                ])
             if limit is not None or offset is not None:
                 query += u' ' + sql.format_limit(limit, offset)
             self._m.note(query=query, values=values)
@@ -250,14 +259,14 @@ class ReadOnlyStorage(object):
             raise FieldNotInResource(field=param.key)
         return u' OR '.join(conds)
 
-    def _kludge_order_by_fields(self, sql, schema, key, main_table,
+    def _kludge_order_by_fields(self, sql, schema, sort, main_table,
                                 tables_used, join_conditions):
         columns_by_table_name = collections.defaultdict(list)
         for table_name, column_name, _ in schema:
             columns_by_table_name[table_name].append(column_name)
 
         for table_name, column_name, _ in schema:
-            if column_name == key:
+            if column_name == sort.key:
                 if table_name == main_table:
                     table_alias = u't0'
                 else:
@@ -267,9 +276,10 @@ class ReadOnlyStorage(object):
                     join_conds = self._kludge_first_item_join_cond(
                         sql, table_alias, columns_by_table_name[table_name])
                     join_conditions[idx] = join_conds
-                return sql.qualified_column(table_alias, column_name)
+                qualified_name = sql.qualified_column(table_alias, column_name)
+                return SortParam(qualified_name, ascending=sort.ascending)
         # key did not match column name in any table
-        raise FieldNotInResource(field=key)
+        raise FieldNotInResource(field=sort.key)
 
     def _kludge_first_item_join_cond(self, sql, table_alias, columns):
         # Build extra condition JOIN conditions in order to join just first

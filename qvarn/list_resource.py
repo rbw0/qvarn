@@ -34,6 +34,8 @@ import bottle
 
 import qvarn
 
+from qvarn.read_only import SortParam
+
 
 class ListResource(object):
 
@@ -244,7 +246,11 @@ class ListResource(object):
                 i += 2
             elif part == u'sort':
                 sort_field = criteria[i + 1]
-                sort_params.append(sort_field)
+                sort_params.append(SortParam(sort_field, ascending=True))
+                i += 2
+            elif part == u'rsort':
+                sort_field = criteria[i + 1]
+                sort_params.append(SortParam(sort_field, ascending=False))
                 i += 2
             elif part == u'limit':
                 try:

@@ -4,6 +4,11 @@ NEWS for Qvarn
 Version 0.82+git, not yet released
 ----------------------------------
 
+Version 0.82-4.vaultit, released 2018-01-10
+-------------------------------------------
+
+* Added /rsort operator for sorting in descengin order.
+
 
 Version 0.82-3.vaultit, released 2017-09-27
 -------------------------------------------

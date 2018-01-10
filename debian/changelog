@@ -1,3 +1,9 @@
+qvarn (0.82+git-4) UNRELEASED; urgency=medium
+
+  * Sort in descending order.
+
+ -- POV Team <tilaajavastuu@pov.lt>  Wed, 10 Jan 2018 15:38:30 +0300
+
 qvarn (0.82+git-1) UNRELEASED; urgency=medium
 
   * New upstream version.

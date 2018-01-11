@@ -184,6 +184,7 @@ class ReadOnlyStorage(object):
                     u'({})'.format(c) for c in conds)
             if order_by_fields:
                 query += u' ORDER BY ' + u', '.join([
+                    # pylint: disable=no-member
                     sort.key + (u'' if sort.ascending else u' DESC')
                     for sort in order_by_fields
                 ])

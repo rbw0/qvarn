@@ -31,6 +31,8 @@ import bottle
 
 import qvarn
 
+from qvarn.read_only import SortParam
+
 
 listener_prototype = {
     u'type': u'',
@@ -202,7 +204,7 @@ class ListenerResource(object):
             result = ro.search(t, [
                 qvarn.create_search_param(u'exact', u'listener_id',
                                           listener_id),
-            ], [], sort_params=[u'last_modified'])
+            ], [], sort_params=[SortParam(u'last_modified', ascending=True)])
         return result
 
     def post_listener(self):

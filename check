@@ -118,5 +118,6 @@ pylint --rcfile /dev/null \
        --disable too-many-statements \
        --disable arguments-differ \
        --disable no-else-return \
+       --disable inconsistent-return-statements \
        \
        qvarn

@@ -7,7 +7,7 @@ Version 0.82+git, not yet released
 Version 0.82-4.vaultit, released 2018-01-10
 -------------------------------------------
 
-* Added /rsort operator for sorting in descengin order.
+* Added /rsort operator for sorting in descending order.
 
 
 Version 0.82-3.vaultit, released 2017-09-27
@@ -16,7 +16,7 @@ Version 0.82-3.vaultit, released 2017-09-27
 * Added /any operator.
 
 * Fixed Qvarn initialization bug, where specs where initialized from path. In
-  cases where path was not a resource type, but also cantained additional
+  cases where path was not a resource type, but also contained additional
   components, like resource id, initialization failed.
 
 * Fixed performance issue with notifications. In order to get notifications
@@ -30,7 +30,7 @@ Version 0.82, released 2017-06-06
 * Added some documentation for resource type definition.
 
 * Mantas added the /limit and /offset operators to /search. This
-  should be useful for implemenating pagination in API clients.
+  should be useful for implementing pagination in API clients.
 
 * Made the Transaction class handle exceptions when committing or
   rolling back a database transaction, and not leak database

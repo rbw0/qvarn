@@ -184,6 +184,7 @@ class FileSlogWriter(SlogWriter):
 
     def __init__(self):
         self._log_filename = None
+        self._log_filename_with_pid = None
         self._log_file = None
         self._bytes_max = None
         self._encoder = json.JSONEncoder(sort_keys=True)
@@ -191,11 +192,8 @@ class FileSlogWriter(SlogWriter):
     def set_max_file_size(self, bytes_max):
         self._bytes_max = bytes_max
 
-    def get_filename(self, pid=None):
-        if pid is None:
-            pid = os.getpid()
-        prefix, suffix = os.path.splitext(self._log_filename)
-        return '{}-{}{}'.format(prefix, pid, suffix)
+    def get_filename(self):
+        return self._log_filename_with_pid
 
     def get_rotated_filename(self, now=None, pid=None):
         if pid is None:
@@ -208,9 +206,13 @@ class FileSlogWriter(SlogWriter):
         timestamp = time.strftime('%Y%m%dT%H%M%S', now)
         return '{}-{}-{}{}'.format(prefix, timestamp, pid, suffix)
 
-    def set_filename(self, filename):
+    def set_filename(self, filename, pid=None):
         self._log_filename = filename
-        self._log_file = open(self.get_filename(), 'a')
+        if pid is None:
+            pid = os.getpid()
+        prefix, suffix = os.path.splitext(self._log_filename)
+        self._log_filename_with_pid = '{}-{}{}'.format(prefix, pid, suffix)
+        self._log_file = open(self._log_filename_with_pid, 'a')
 
     def write(self, log_obj):
         if self._log_file:

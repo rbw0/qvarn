@@ -229,8 +229,8 @@ class FileSlogWriterTests(unittest.TestCase):
 
     def test_gets_initial_filename_right(self):
         fw = qvarn.FileSlogWriter()
-        fw.set_filename('foo.log')
-        self.assertEqual(fw.get_filename(pid=123), 'foo-123.log')
+        fw.set_filename('foo.log', pid=123)
+        self.assertEqual(fw.get_filename(), 'foo-123.log')
 
     def test_gets_rotated_filename_right(self):
         fw = qvarn.FileSlogWriter()

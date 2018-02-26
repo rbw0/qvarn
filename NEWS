@@ -4,6 +4,12 @@ NEWS for Qvarn
 Version 0.82+git, not yet released
 ----------------------------------
 
+Version 0.82-5.vaultit, released 2018-02-26
+-------------------------------------------
+
+* Fixed a race condition in log file rotation.
+
+
 Version 0.82-4.vaultit, released 2018-01-10
 -------------------------------------------
 

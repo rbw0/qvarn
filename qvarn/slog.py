@@ -191,21 +191,26 @@ class FileSlogWriter(SlogWriter):
     def set_max_file_size(self, bytes_max):
         self._bytes_max = bytes_max
 
-    def get_filename(self):
-        return self._log_filename
+    def get_filename(self, pid=None):
+        if pid is None:
+            pid = os.getpid()
+        prefix, suffix = os.path.splitext(self._log_filename)
+        return '{}-{}{}'.format(prefix, pid, suffix)
 
-    def get_rotated_filename(self, now=None):
+    def get_rotated_filename(self, now=None, pid=None):
+        if pid is None:
+            pid = os.getpid()
         prefix, suffix = os.path.splitext(self._log_filename)
         if now is None:  # pragma: no cover
             now = time.localtime()
         else:
             now = (list(now) + [0]*9)[:9]
         timestamp = time.strftime('%Y%m%dT%H%M%S', now)
-        return '{}-{}{}'.format(prefix, timestamp, suffix)
+        return '{}-{}-{}{}'.format(prefix, timestamp, pid, suffix)
 
     def set_filename(self, filename):
         self._log_filename = filename
-        self._log_file = open(filename, 'a')
+        self._log_file = open(self.get_filename(), 'a')
 
     def write(self, log_obj):
         if self._log_file:
@@ -223,7 +228,7 @@ class FileSlogWriter(SlogWriter):
         if pos >= self._bytes_max:
             self._log_file.close()
             rotated = self.get_rotated_filename()
-            os.rename(self._log_filename, rotated)
+            os.rename(self.get_filename(), rotated)
             self.set_filename(self._log_filename)
 
     def close(self):

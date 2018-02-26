@@ -223,24 +223,28 @@ class FileSlogWriterTests(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.tempdir)
 
+    def get_filename_with_pid(self, filename):
+        prefix, suffix = os.path.splitext(filename)
+        return '{}-{}{}'.format(prefix, os.getpid(), suffix)
+
     def test_gets_initial_filename_right(self):
         fw = qvarn.FileSlogWriter()
         fw.set_filename('foo.log')
-        self.assertEqual(fw.get_filename(), 'foo.log')
+        self.assertEqual(fw.get_filename(pid=123), 'foo-123.log')
 
     def test_gets_rotated_filename_right(self):
         fw = qvarn.FileSlogWriter()
         fw.set_filename('foo.log')
         self.assertEqual(
-            fw.get_rotated_filename(now=(1969, 9, 1, 14, 30, 42)),
-            'foo-19690901T143042.log'
+            fw.get_rotated_filename(now=(1969, 9, 1, 14, 30, 42), pid=123),
+            'foo-19690901T143042-123.log'
         )
 
     def test_creates_file(self):
         fw = qvarn.FileSlogWriter()
         filename = os.path.join(self.tempdir, 'slog.log')
         fw.set_filename(filename)
-        self.assertTrue(os.path.exists(filename))
+        self.assertTrue(os.path.exists(self.get_filename_with_pid(filename)))
 
     def test_rotates_after_size_limit(self):
         fw = qvarn.FileSlogWriter()
@@ -250,10 +254,11 @@ class FileSlogWriterTests(unittest.TestCase):
         fw.write({'foo': 'bar'})
         filenames = glob.glob(self.tempdir + '/*.log')
         self.assertEqual(len(filenames), 2)
-        self.assertTrue(filename in filenames)
+        filename_with_pid = self.get_filename_with_pid(filename)
+        self.assertTrue(filename_with_pid in filenames)
 
-        rotated_filename = [x for x in filenames if x != filename][0]
-        objs1 = self.load_log_objs(filename)
+        rotated_filename = [x for x in filenames if x != filename_with_pid][0]
+        objs1 = self.load_log_objs(filename_with_pid)
         objs2 = self.load_log_objs(rotated_filename)
 
         self.assertEqual(len(objs1), 0)

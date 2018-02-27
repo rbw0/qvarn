@@ -52,6 +52,10 @@ class StructuredLog(object):
             writer.close()
         self._writers = []
 
+    def reopen(self):
+        for writer, _ in self._writers:
+            writer.reopen()
+
     def add_log_writer(self, writer, filter_rule):
         self._writers.append((writer, filter_rule))
 
@@ -170,6 +174,9 @@ class SlogWriter(object):  # pragma: no cover
     def close(self):
         raise NotImplementedError()
 
+    def reopen(self):
+        raise NotImplementedError()
+
 
 class NullSlogWriter(SlogWriter):  # pragma: no cover
 
@@ -177,6 +184,9 @@ class NullSlogWriter(SlogWriter):  # pragma: no cover
         pass
 
     def close(self):
+        pass
+
+    def reopen(self):
         pass
 
 
@@ -237,6 +247,10 @@ class FileSlogWriter(SlogWriter):
         self._log_file.close()
         self._log_file = None
 
+    def reopen(self, pid=None):
+        self.close()
+        self.set_filename(self._log_filename, pid=pid)
+
 
 class SyslogSlogWriter(SlogWriter):  # pragma: no cover
 
@@ -246,6 +260,9 @@ class SyslogSlogWriter(SlogWriter):  # pragma: no cover
         syslog.syslog(s)
 
     def close(self):
+        pass
+
+    def reopen(self):
         pass
 
 

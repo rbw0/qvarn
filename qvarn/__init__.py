@@ -23,6 +23,7 @@ from .version import (
 
 from .slog import (
     StructuredLog,
+    SlogWriter,
     NullSlogWriter,
     FileSlogWriter,
     SyslogSlogWriter,

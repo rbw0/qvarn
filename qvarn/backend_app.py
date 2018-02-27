@@ -151,6 +151,7 @@ class BackendApplication(object):
 
         '''
 
+        qvarn.log.reopen()
         self._connect_to_storage(self._conf)
 
         self._setup_auth(self._conf)

@@ -1,3 +1,9 @@
+qvarn (0.82+git-6) UNRELEASED; urgency=medium
+
+  * Make sure log files are re-opened after uwsgi forks.
+
+ -- POV Team <tilaajavastuu@pov.lt>  Mon, 27 Feb 2018 10:46:00 +0300
+
 qvarn (0.82+git-5) UNRELEASED; urgency=medium
 
   * Fixed a race condition in log file rotation.

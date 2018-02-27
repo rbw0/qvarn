@@ -4,6 +4,12 @@ NEWS for Qvarn
 Version 0.82+git, not yet released
 ----------------------------------
 
+Version 0.82-6.vaultit, released 2018-02-27
+-------------------------------------------
+
+* Re-open log-files after fork.
+
+
 Version 0.82-5.vaultit, released 2018-02-26
 -------------------------------------------
 

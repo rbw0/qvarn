@@ -214,6 +214,31 @@ class StructuredLogTests(unittest.TestCase):
 
         self.assertEqual(objs1, objs2)
 
+    def test_reopen_logs(self):
+        class MockWriter(qvarn.SlogWriter):
+            def __init__(self):
+                self.written = False
+                self.closed = False
+                self.reopened = False
+
+            def write(self, _):
+                self.written = True
+
+            def close(self):
+                self.closed = True
+
+            def reopen(self):
+                self.reopened = True
+
+        slog = qvarn.StructuredLog()
+        writer1, writer2 = MockWriter(), MockWriter()
+        slog.add_log_writer(writer1, qvarn.FilterAllow())
+        slog.add_log_writer(writer2, qvarn.FilterAllow())
+        slog.reopen()
+
+        self.assertTrue(writer1.reopened)
+        self.assertTrue(writer2.reopened)
+
 
 class FileSlogWriterTests(unittest.TestCase):
 
@@ -223,14 +248,17 @@ class FileSlogWriterTests(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.tempdir)
 
-    def get_filename_with_pid(self, filename):
+    def get_filename_with_pid(self, filename, pid=None):
         prefix, suffix = os.path.splitext(filename)
-        return '{}-{}{}'.format(prefix, os.getpid(), suffix)
+        pid = pid or os.getpid()
+        return '{}-{}{}'.format(prefix, pid, suffix)
 
     def test_gets_initial_filename_right(self):
         fw = qvarn.FileSlogWriter()
-        fw.set_filename('foo.log', pid=123)
-        self.assertEqual(fw.get_filename(), 'foo-123.log')
+        filename = os.path.join(self.tempdir, 'foo.log')
+        fw.set_filename(filename, pid=123)
+        self.assertEqual(fw.get_filename(),
+                         self.get_filename_with_pid(filename, pid=123))
 
     def test_gets_rotated_filename_right(self):
         fw = qvarn.FileSlogWriter()
@@ -263,6 +291,18 @@ class FileSlogWriterTests(unittest.TestCase):
 
         self.assertEqual(len(objs1), 0)
         self.assertEqual(len(objs2), 1)
+
+    def test_reopen_updates_pid(self):
+        fw = qvarn.FileSlogWriter()
+        filename = os.path.join(self.tempdir, 'slog.log')
+        fw.set_filename(filename, pid=123)
+        self.assertTrue(os.path.exists(
+            self.get_filename_with_pid(filename, pid=123)
+        ))
+        fw.reopen(pid=456)
+        self.assertTrue(os.path.exists(
+            self.get_filename_with_pid(filename, pid=456)
+        ))
 
     def load_log_objs(self, filename):
         with open(filename) as f:

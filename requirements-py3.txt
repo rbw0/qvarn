@@ -3,7 +3,7 @@ bottle==0.12.9
 cffi==1.6.0
 colorama==0.3.7
 coverage==4.1
-CoverageTestRunner==1.12
+CoverageTestRunner==1.11
 cryptography==1.4
 enum34==1.1.6
 flup==1.0.3.dev20161029

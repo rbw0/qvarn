@@ -244,9 +244,8 @@ class SearchAnyTests(ListResourceBase):
     def test_non_json_value(self):
         with self.assertRaises(BadAnySearchValue) as e:
             self._search(u'/search/any/exact/foo/bar/show_all')
-        self.assertEqual(str(e.exception), (
+        self.assertTrue(str(e.exception).startswith(
             u"Can't parse ANY search value: "
-            u"Expecting value: line 1 column 1 (char 0)."
         ))
 
     def test_non_list_value(self):

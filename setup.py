@@ -40,6 +40,8 @@ setup(
         'psycopg2',
         'PyJWT',
         'uwsgidecorators',
+        'pyyaml',
+        'cryptography',
     ],
     classifiers=[
         'Programming Language :: Python :: 2.7',
